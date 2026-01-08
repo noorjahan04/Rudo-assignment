@@ -33,25 +33,25 @@ A comprehensive backend API for managing shared expenses, groups, balances, and 
 ### Installation
 
 1. **Clone the repository and navigate to Backend directory**
-      bash
+   ```bash
    cd Backend
-      
+   ```
 
 2. **Install dependencies**
-      bash
+   ```bash
    npm install
-   
+   ```
 
 3. **Set up environment variables**
    
    Create a `.env` file in the Backend directory:
-      env
+   ```env
    PORT=3000
    MONGODB_URI=mongodb://localhost:27017/rudo-backend
    FIREBASE_SERVICE_ACCOUNT={"type":"service_account",...}
    VAPID_PUBLIC_KEY=your_public_key
    VAPID_PRIVATE_KEY=your_private_key
-   
+   ```
 
 4. **Configure Firebase**
    
@@ -72,9 +72,9 @@ A comprehensive backend API for managing shared expenses, groups, balances, and 
    Make sure MongoDB is running locally or update `MONGODB_URI` to your cloud instance.
 
 6. **Start the server**
-      bash
+   ```bash
    npm start
-   
+   ```
 
    The server will start on `http://localhost:3000`
 
@@ -83,7 +83,7 @@ A comprehensive backend API for managing shared expenses, groups, balances, and 
 ### Using Firebase Web SDK
 
 1. **Initialize Firebase in your frontend:**
-      javascript
+   ```javascript
    import { initializeApp } from "firebase/app";
    import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
@@ -98,10 +98,10 @@ A comprehensive backend API for managing shared expenses, groups, balances, and 
 
    const app = initializeApp(firebaseConfig);
    const auth = getAuth(app);
-   
+   ```
 
 2. **Sign in and get ID token:**
-      javascript
+   ```javascript
    // Sign in with email and password
    const userCredential = await signInWithEmailAndPassword(auth, email, password);
    const user = userCredential.user;
@@ -115,7 +115,7 @@ A comprehensive backend API for managing shared expenses, groups, balances, and 
        'Authorization': `Bearer ${idToken}`
      }
    });
-   
+   ```
 
 3. **Create test users in Firebase Console:**
    - Go to Firebase Console → Authentication → Users
@@ -126,43 +126,45 @@ A comprehensive backend API for managing shared expenses, groups, balances, and 
 
 1. Get Firebase ID token from your frontend application
 2. Use it in the Authorization header:
-   
+   ```
    Authorization: Bearer <your-firebase-id-token>
-   
+   ```
 
 ## API Documentation
 
 ### Base URL
-
+```
 http://localhost:3000/api
-
+```
 
 All endpoints require authentication via Firebase ID token in the Authorization header:
-
+```
 Authorization: Bearer <firebase-id-token>
-
+```
 
 ### Response Format
 
 All responses follow this format:
-   json
+```json
 {
   "success": true/false,
   "data": {...},
   "message": "Error message (if success is false)"
 }
+```
 
+---
 
 ### User Endpoints
 
 #### Get User Profile
-
+```
 GET /api/users/profile
-
+```
 Returns the current authenticated user's profile.
 
 **Response:**
-   json
+```json
 {
   "success": true,
   "data": {
@@ -174,32 +176,32 @@ Returns the current authenticated user's profile.
     "createdAt": "2024-01-01T00:00:00.000Z"
   }
 }
-
+```
 
 #### Update FCM Token
-
+```
 PUT /api/users/fcm-token
-
+```
 Register or update FCM token for push notifications.
 
 **Request Body:**
-   json
+```json
 {
   "fcmToken": "fcm_token_string"
 }
-
+```
 
 #### Get User Balances
-
+```
 GET /api/users/balances?groupId=optional_group_id
-
+```
 Get user's balances (who owes them and whom they owe).
 
 **Query Parameters:**
 - `groupId` (optional): Filter balances for a specific group
 
 **Response:**
-   json
+```json
 {
   "success": true,
   "data": {
@@ -222,28 +224,28 @@ Get user's balances (who owes them and whom they owe).
     "totalOwed": 50.25
   }
 }
-
+```
 
 ---
 
 ### Group Endpoints
 
 #### Create Group
-
+```
 POST /api/groups
-
+```
 Create a new group.
 
 **Request Body:**
-   json
+```json
 {
   "name": "Trip to Goa",
   "description": "Weekend trip expenses"
 }
-
+```
 
 **Response:**
-   json
+```json
 {
   "success": true,
   "data": {
@@ -256,58 +258,58 @@ Create a new group.
     "createdAt": "2024-01-01T00:00:00.000Z"
   }
 }
-
+```
 
 #### Get User's Groups
-
+```
 GET /api/groups
-
+```
 Get all groups the user is a member of.
 
 #### Get Group by ID
-
+```
 GET /api/groups/:groupId
-
+```
 Get details of a specific group (must be a member).
 
 #### Add Member to Group
-
+```
 POST /api/groups/:groupId/members
-
+```
 Add a user to a group (only creators/admins can add members).
 
 **Request Body:**
-  json
+```json
 {
   "userId": "user_id_to_add"
 }
-
+```
 
 #### Remove Member from Group
-
+```
 DELETE /api/groups/:groupId/members
-
+```
 Remove a user from a group (only creators/admins can remove members).
 
 **Request Body:**
-   json
+```json
 {
   "userId": "user_id_to_remove"
 }
-
+```
 
 ---
 
 ### Expense Endpoints
 
 #### Create Expense
-
+```
 POST /api/expenses
-
+```
 Create a new expense.
 
 **Request Body:**
-   json
+```json
 {
   "description": "Dinner at restaurant",
   "amount": 1000,
@@ -326,11 +328,12 @@ Create a new expense.
     }
   ]
 }
+```
 
 **Split Type Examples:**
 
 1. **EQUAL Split:**
-      json
+   ```json
    {
      "splitType": "EQUAL",
      "participants": [
@@ -339,11 +342,11 @@ Create a new expense.
        { "user": "user_id_3" }
      ]
    }
-   
+   ```
    Each participant pays 1000/3 = ₹333.33
 
 2. **EXACT Split:**
-      json
+   ```json
    {
      "splitType": "EXACT",
      "participants": [
@@ -352,11 +355,11 @@ Create a new expense.
        { "user": "user_id_3", "amount": 300 }
      ]
    }
-   
+   ```
    Total must equal expense amount (1000)
 
 3. **PERCENT Split:**
-      json
+   ```json
    {
      "splitType": "PERCENT",
      "participants": [
@@ -365,11 +368,11 @@ Create a new expense.
        { "user": "user_id_3", "percentage": 20 }
      ]
    }
-      
+   ```
    Percentages must sum to 100%
 
 **Response:**
-   json
+```json
 {
   "success": true,
   "data": {
@@ -382,32 +385,32 @@ Create a new expense.
     "date": "2024-01-01T00:00:00.000Z"
   }
 }
-   
+```
 
 #### Get Group Expenses
-
+```
 GET /api/expenses/group/:groupId
-
+```
 Get all expenses for a specific group.
 
 #### Get User Expenses (Non-group)
-
+```
 GET /api/expenses/user
-
+```
 Get all non-group expenses involving the user.
 
 #### Update Expense
-
+```
 PUT /api/expenses/:expenseId
-
+```
 Update an expense (only creator or payer can update).
 
 **Request Body:** Same as create expense, but all fields are optional.
 
 #### Delete Expense
-
+```
 DELETE /api/expenses/:expenseId
-
+```
 Delete an expense (only creator or payer can delete). Balances are automatically reversed.
 
 ---
@@ -415,13 +418,13 @@ Delete an expense (only creator or payer can delete). Balances are automatically
 ### Settlement Endpoints
 
 #### Create Settlement
-
+```
 POST /api/settlements
-
+```
 Record a settlement (one user paying another).
 
 **Request Body:**
-   json
+```json
 {
   "fromUser": "user_id_who_pays",
   "toUser": "user_id_who_receives",
@@ -429,10 +432,10 @@ Record a settlement (one user paying another).
   "group": "group_id",  // optional
   "description": "Settled via UPI"
 }
-
+```
 
 **Response:**
-   json
+```json
 {
   "success": true,
   "data": {
@@ -444,18 +447,18 @@ Record a settlement (one user paying another).
     "createdAt": "2024-01-01T00:00:00.000Z"
   }
 }
-
+```
 
 #### Get Group Settlements
-
+```
 GET /api/settlements/group/:groupId
-
+```
 Get settlement history for a group.
 
 #### Get User Settlements (Non-group)
-
+```
 GET /api/settlements/user
-
+```
 Get non-group settlements involving the user.
 
 ---
@@ -463,13 +466,13 @@ Get non-group settlements involving the user.
 ### Debt Simplification Endpoints
 
 #### Get Global Simplified Debts
-
+```
 GET /api/debts/global
-
+```
 Get simplified debt settlement list across all groups (minimum transactions to settle all debts).
 
 **Response:**
-   json
+```json
 {
   "success": true,
   "data": {
@@ -488,16 +491,16 @@ Get simplified debt settlement list across all groups (minimum transactions to s
     "count": 2
   }
 }
-
+```
 
 #### Get Group Simplified Debts
-
+```
 GET /api/debts/group/:groupId
-
+```
 Get simplified debt settlement list for a specific group.
 
 **Response:**
-   json
+```json
 {
   "success": true,
   "data": {
@@ -515,7 +518,7 @@ Get simplified debt settlement list for a specific group.
     "count": 1
   }
 }
-
+```
 
 **Note:** This endpoint returns the minimum number of transactions needed to settle all debts. It does not modify actual balances unless you create settlements using the settlement endpoints.
 
@@ -525,10 +528,10 @@ Get simplified debt settlement list for a specific group.
 
 ### Example 1: Creating an Expense
 
-   bash
-curl -X POST http://localhost:3000/api/expenses 
-  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" 
-  -H "Content-Type: application/json" 
+```bash
+curl -X POST http://localhost:3000/api/expenses \
+  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" \
+  -H "Content-Type: application/json" \
   -d '{
     "description": "Dinner at restaurant",
     "amount": 1500,
@@ -541,24 +544,24 @@ curl -X POST http://localhost:3000/api/expenses
       { "user": "user_id_3" }
     ]
   }'
-
+```
 
 ### Example 2: Viewing Balances
 
-   bash
+```bash
 curl -X GET "http://localhost:3000/api/users/balances?groupId=group_id" \
   -H "Authorization: Bearer YOUR_FIREBASE_TOKEN"
-
+```
 
 ### Example 3: Debt Simplification Output
 
-   bash
+```bash
 curl -X GET http://localhost:3000/api/debts/group/group_id \
   -H "Authorization: Bearer YOUR_FIREBASE_TOKEN"
-
+```
 
 **Output:**
-   json
+```json
 {
   "success": true,
   "data": {
@@ -597,7 +600,7 @@ curl -X GET http://localhost:3000/api/debts/group/group_id \
     "count": 2
   }
 }
-
+```
 
 This means:
 - Alice should pay Bob ₹250.75
@@ -621,6 +624,7 @@ This means:
 
 ## Project Structure
 
+```
 Backend/
 ├── src/
 │   ├── config/
@@ -662,12 +666,12 @@ Backend/
 ## Error Handling
 
 All errors return a consistent format:
-   json
+```json
 {
   "success": false,
   "message": "Error message describing what went wrong"
 }
-
+```
 
 Common HTTP status codes:
 - `200`: Success
@@ -708,5 +712,4 @@ To test the API:
 - [ ] Add email notifications
 - [ ] Implement rate limiting
 - [ ] Add comprehensive logging
-
 
