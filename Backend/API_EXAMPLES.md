@@ -1,35 +1,49 @@
-API Usage Examples
+# API Usage Examples
+
 This document provides practical examples of how to use the Rudo Backend API.
 
-Prerequisites
-Get a Firebase ID token from your frontend application
-Replace YOUR_FIREBASE_TOKEN with your actual token
-Replace user_id, group_id, etc. with actual IDs from your database
-Example 1: Complete Expense Flow
-Step 1: Get User Profile
-curl -X GET http://localhost:3000/api/users/profile \
+## Prerequisites
+
+1. Get a Firebase ID token from your frontend application
+2. Replace `YOUR_FIREBASE_TOKEN` with your actual token
+3. Replace `user_id`, `group_id`, etc. with actual IDs from your database
+
+## Example 1: Complete Expense Flow
+
+### Step 1: Get User Profile
+   bash
+curl -X GET http://localhost:3000/api/users/profile 
   -H "Authorization: Bearer YOUR_FIREBASE_TOKEN"
-Step 2: Create a Group
-curl -X POST http://localhost:3000/api/groups \
-  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" \
-  -H "Content-Type: application/json" \
+
+
+### Step 2: Create a Group
+   bash
+curl -X POST http://localhost:3000/api/groups 
+  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" 
+  -H "Content-Type: application/json" 
   -d '{
     "name": "Weekend Trip",
     "description": "Expenses for weekend trip to Goa"
   }'
-Response will include _id - save this as group_id.
 
-Step 3: Add Members to Group
-curl -X POST http://localhost:3000/api/groups/group_id/members \
-  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" \
-  -H "Content-Type: application/json" \
+
+Response will include `_id` - save this as `group_id`.
+
+### Step 3: Add Members to Group
+   bash
+curl -X POST http://localhost:3000/api/groups/group_id/members 
+  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" 
+  -H "Content-Type: application/json" 
   -d '{
     "userId": "other_user_id"
   }'
-Step 4: Create an Expense (EQUAL Split)
-curl -X POST http://localhost:3000/api/expenses \
-  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" \
-  -H "Content-Type: application/json" \
+
+
+### Step 4: Create an Expense (EQUAL Split)
+   bash
+curl -X POST http://localhost:3000/api/expenses 
+  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" 
+  -H "Content-Type: application/json" 
   -d '{
     "description": "Hotel booking",
     "amount": 3000,
@@ -42,10 +56,13 @@ curl -X POST http://localhost:3000/api/expenses \
       { "user": "user_id_3" }
     ]
   }'
-Step 5: Create an Expense (EXACT Split)
-curl -X POST http://localhost:3000/api/expenses \
-  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" \
-  -H "Content-Type: application/json" \
+
+
+### Step 5: Create an Expense (EXACT Split)
+   bash
+curl -X POST http://localhost:3000/api/expenses 
+  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" 
+  -H "Content-Type: application/json" 
   -d '{
     "description": "Restaurant dinner",
     "amount": 1500,
@@ -58,10 +75,13 @@ curl -X POST http://localhost:3000/api/expenses \
       { "user": "user_id_3", "amount": 400 }
     ]
   }'
-Step 6: Create an Expense (PERCENT Split)
-curl -X POST http://localhost:3000/api/expenses \
-  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" \
-  -H "Content-Type: application/json" \
+
+
+### Step 6: Create an Expense (PERCENT Split)
+   bash
+curl -X POST http://localhost:3000/api/expenses 
+  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" 
+  -H "Content-Type: application/json" 
   -d '{
     "description": "Taxi fare",
     "amount": 2000,
@@ -74,16 +94,25 @@ curl -X POST http://localhost:3000/api/expenses \
       { "user": "user_id_3", "percentage": 20 }
     ]
   }'
-Step 7: View Balances
-curl -X GET "http://localhost:3000/api/users/balances?groupId=group_id" \
+
+
+### Step 7: View Balances
+   bash
+curl -X GET "http://localhost:3000/api/users/balances?groupId=group_id" 
   -H "Authorization: Bearer YOUR_FIREBASE_TOKEN"
-Step 8: Get Debt Simplification
-curl -X GET http://localhost:3000/api/debts/group/group_id \
+
+
+### Step 8: Get Debt Simplification
+   bash
+curl -X GET http://localhost:3000/api/debts/group/group_id 
   -H "Authorization: Bearer YOUR_FIREBASE_TOKEN"
-Step 9: Record a Settlement
-curl -X POST http://localhost:3000/api/settlements \
-  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" \
-  -H "Content-Type: application/json" \
+
+
+### Step 9: Record a Settlement
+   bash
+curl -X POST http://localhost:3000/api/settlements 
+  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" 
+  -H "Content-Type: application/json" 
   -d '{
     "fromUser": "user_id_2",
     "toUser": "your_user_id",
@@ -91,11 +120,15 @@ curl -X POST http://localhost:3000/api/settlements \
     "group": "group_id",
     "description": "Paid via UPI"
   }'
-Example 2: Non-Group Expenses
-Create Non-Group Expense
-curl -X POST http://localhost:3000/api/expenses \
-  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" \
-  -H "Content-Type: application/json" \
+
+
+## Example 2: Non-Group Expenses
+
+### Create Non-Group Expense
+   bash
+curl -X POST http://localhost:3000/api/expenses 
+  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" 
+  -H "Content-Type: application/json" 
   -d '{
     "description": "Shared cab with friend",
     "amount": 500,
@@ -107,36 +140,63 @@ curl -X POST http://localhost:3000/api/expenses \
       { "user": "friend_user_id" }
     ]
   }'
-Get Non-Group Expenses
-curl -X GET http://localhost:3000/api/expenses/user \
+
+
+### Get Non-Group Expenses
+   bash
+curl -X GET http://localhost:3000/api/expenses/user 
   -H "Authorization: Bearer YOUR_FIREBASE_TOKEN"
-Example 3: Global Debt Simplification
+
+
+## Example 3: Global Debt Simplification
+
+   bash
 curl -X GET http://localhost:3000/api/debts/global \
   -H "Authorization: Bearer YOUR_FIREBASE_TOKEN"
+
+
 This returns the minimum number of transactions needed to settle all debts across all groups.
 
-Example 4: Update FCM Token for Push Notifications
-curl -X PUT http://localhost:3000/api/users/fcm-token \
-  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" \
-  -H "Content-Type: application/json" \
+## Example 4: Update FCM Token for Push Notifications
+
+   bash
+curl -X PUT http://localhost:3000/api/users/fcm-token 
+  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" 
+  -H "Content-Type: application/json" 
   -d '{
     "fcmToken": "your_fcm_token_from_frontend"
   }'
-Example 5: View Group Expenses
-curl -X GET http://localhost:3000/api/expenses/group/group_id \
+
+
+## Example 5: View Group Expenses
+
+   bash
+curl -X GET http://localhost:3000/api/expenses/group/group_id 
   -H "Authorization: Bearer YOUR_FIREBASE_TOKEN"
-Example 6: Update an Expense
-curl -X PUT http://localhost:3000/api/expenses/expense_id \
-  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" \
-  -H "Content-Type: application/json" \
+
+
+## Example 6: Update an Expense
+
+   bash
+curl -X PUT http://localhost:3000/api/expenses/expense_id 
+  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN" 
+  -H "Content-Type: application/json" 
   -d '{
     "description": "Updated description",
     "amount": 3500
-  }'
-Example 7: Delete an Expense
-curl -X DELETE http://localhost:3000/api/expenses/expense_id \
+  }
+
+
+## Example 7: Delete an Expense
+
+   bash
+curl -X DELETE http://localhost:3000/api/expenses/expense_id 
   -H "Authorization: Bearer YOUR_FIREBASE_TOKEN"
-JavaScript/Node.js Example
+
+
+## JavaScript/Node.js Example
+
+   javascript
 const axios = require('axios');
 
 const API_BASE_URL = 'http://localhost:3000/api';
@@ -232,14 +292,20 @@ async function getSimplifiedDebts(groupId = null) {
     await getSimplifiedDebts(group._id);
   }
 })();
-Postman Collection
+
+
+## Postman Collection
+
 You can import these examples into Postman:
 
-Create a new collection
-Set collection variable: base_url = http://localhost:3000/api
-Set collection variable: token = YOUR_FIREBASE_TOKEN
-Use {{base_url}} and {{token}} in your requests
-Error Handling Example
+1. Create a new collection
+2. Set collection variable: `base_url` = `http://localhost:3000/api`
+3. Set collection variable: `token` = `YOUR_FIREBASE_TOKEN`
+4. Use `{{base_url}}` and `{{token}}` in your requests
+
+## Error Handling Example
+
+   javascript
 try {
   const response = await api.post('/expenses', expenseData);
   if (response.data.success) {
@@ -255,3 +321,4 @@ try {
     console.error('Network Error:', error.message);
   }
 }
+
