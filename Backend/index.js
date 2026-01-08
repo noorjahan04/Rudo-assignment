@@ -13,9 +13,7 @@ const debtSimplificationRoutes = require('./routes/debtSimplificationRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGODB_URI =
-  process.env.MONGODB_URI ||
-  "mongodb+srv://noorifms:ZmYDE2bwIv3RJfJE@cluster0.wrkw41t.mongodb.net/city?retryWrites=true&w=majority&appName=Cluster0";
-
+  process.env.MONGODB_URI 
 // Middleware
 app.use(cors());
 app.use(express.json());
